@@ -1,0 +1,58 @@
+services:
+
+  db:
+    image: postgres:12.0-alpine
+
+    volumes:
+    - ./data/db:/var/lib/postgresql/data
+    environment:
+    - POSTGRES_USER=username
+    - POSTGRES_PASSWORD=password
+    - POSTGRES_DB=nudges
+    command: -p 5433
+    ports:
+    - '5433:5433'
+
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    working_dir: /code/src
+    restart: on-failure
+    environment:
+      DEBUG: 1
+    volumes:
+      - ./web:/code
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+
+        
+  dagster-dagit:
+    build: ./etl
+    ports:
+      - 3000:3000
+    # env_file:
+      # - etl/.etl_env
+    depends_on:
+      - dagster-daemon
+
+  dagster-daemon:
+    build: ./etl
+    command: "dagster-daemon run"
+    # env_file:
+      # - etl/.etl_env
+
+  dagster-postgres:
+    image: postgres:13.3
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - dagster-postgres:/var/lib/postgresql/data
+volumes:
+  dagster-postgres:
+    driver: local
