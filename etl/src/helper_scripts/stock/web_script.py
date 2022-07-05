@@ -5,15 +5,11 @@
 from random import choice
 from bs4 import BeautifulSoup
 import requests
+from decouple import config
 
 
-#  BASE CONFIGS
-BASE_URL = 'https://www.stock.com.py/default.aspx'
-HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
-cats = {}
 
-#  HELPER FUNCTIONS
 def check_url_status(url):
     """Checks if the url exist's."""
     r = requests.head(url)

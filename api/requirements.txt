@@ -16,3 +16,4 @@ Jinja2==3.0.1
 
 requests
 pandas
+sqlalchemy-utils

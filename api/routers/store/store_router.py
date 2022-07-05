@@ -24,37 +24,35 @@ def db():
         db.close()
 
 
-#  @store_router.get('/get_all_dose')
-#  def get_all_dose(db=Depends(db)):
-    #  """
-    #  Get All Dose
-    #  ---
-#
-    #  Returns a list of ``all`` dose registered in the sistem.
-#
-    #  """
-#
-    #  data = crud.get_all_dose(db)
-    #  size = len(data)
-    #  API_RESPONSE['size'] = size
-    #  API_RESPONSE['data'] = data
-    #  return (API_RESPONSE)
-#
+
+@store_router.get('/get_all_stores')
+def get_all_stores(db=Depends(db)):
+    """
+    Get all store's
+    """
+
+    data = crud.get_all_stores(db)
+    API_RESPONSE['size'] = len(data)
+    API_RESPONSE['data'] = data
+
+    return(API_RESPONSE)
+
 
 @store_router.post('/save_store')
 def save_dose(store: Store, db=Depends(db)):
+    """
+    Save a store.
+    """
+
     API_RESPONSE['data'] = crud.save_store(db, store)
     return (API_RESPONSE)
 
+@store_router.get('/get_store/{store_name}')
+def get_store(store_name:str, db=Depends(db)):
+    """
+    Get's a store record by name.
+    """
 
-#  @store_router.post('/get_or_create_dose')
-#  def get_or_create_new_dose(d: Dose_Name, db=Depends(db)):
-    #  """
-    #  Get or Create - Dose
-    #  ---
-#
-    #  Allows users to ``get or create`` a new dose in the db.
-#
-    #  """
-    #  API_RESPONSE['data'] = crud.get_or_create_new_dose(db, d)
-    #  return (API_RESPONSE)
+    API_RESPONSE['data'] = crud.filter_store_name(db, store_name)
+    return (API_RESPONSE)
+

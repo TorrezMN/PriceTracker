@@ -13,3 +13,4 @@ class Store(BaseModel):
     store_name : str 
     class Config:
         orm_mode = True
+
