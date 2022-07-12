@@ -16,31 +16,15 @@ from helper_scripts.helper_scripts import HEADERS
 from helper_scripts.helper_scripts import make_soup
 
 
-#  def get_random_url():
-    #  urls = get_categories()
-    #  url_links = list(urls.items())
-    #  print(f'TAMAÑO LISTA URLS : {len(url_links)}')
-    #  return(choice(url_links))
+#  DB
+from db_engine.database import SessionLocal
 
-#  FUNCTIONS
-#  def process_categroy(cat_cont):
-    #  """Process category of products."""
-    #  print(type(cat_cont))
-    #  products = cat_cont.find_all("div", {"class": "item-box"})
-    #  print(len(products))
-    #  for i in products:
-        #  prod_title = i.find_all('h2', {'class':'product-title'})[0].a.text
-        #  prod_price = i.find_all('span', {'class', 'productPrice'})[0].text
-        #  prod_picture = i.find_all('a', {'class','picture-link'})[0].img['src']
-        #  print(prod_title)
-        #  print(prod_price)
-        #  print(prod_picture)
-        #  print('='*20)
-#
-    #  has_next = cat_cont.find_all('div', {'class':'product-pager'})[0].find_all('a').pop()
-    #  print('#'*20)
-    #  print(has_next)
-    #  print(has_next['href'])
+
+#  CRUD OPERATIONS
+from db_engine import categories_crud,store_crud
+
+#  SCHEMAS
+from schemas.store_schemas import Category 
 
 
 @op
@@ -52,14 +36,6 @@ def get_main_content()->str:
     req = requests.get(BASE_URL, headers=HEADERS)
     soup = BeautifulSoup(str(req.text), "html.parser")
     return(str(soup))
-
-#  def get_category_content(url):
-    #  """Gets the category page content."""
-    #  print(f'Getting page: {url}')
-    #  req = requests.get(url, headers=HEADERS)
-    #  soup = BeautifulSoup(req.text, 'lxml')
-    #  return(soup)
-
 
 @op
 def get_categories(soup:str)->dict:
@@ -77,9 +53,33 @@ def get_categories(soup:str)->dict:
         for j in i.find_all('a', href=True):
             cats[j.text]=j['href']
     return(cats)
-#
+
+
+
 @op
-def display_results(a):
+def update_stock_categories(a:dict):
     logger = get_dagster_logger()
     logger.info('DISPLAYING THE DATA!')
-    logger.info(a)
+    for i in a.items():
+        incert_update_category(i)
+
+    
+@op
+def incert_update_category(cat):
+    logger = get_dagster_logger()
+    db = SessionLocal()
+
+    store = store_crud.filter_store_name(db, 'stock')
+    category = categories_crud.get_or_create_category(db, Category(
+        store_id=store.id,
+        category_name=cat[0],
+        category_url=cat[1]
+    ))
+
+    if (category):
+        logger.info('A RECORD WAS UPDATED!')
+        logger.info(category)
+    else:
+        logger.info('A NEW RECORD WAS SAVED!')
+    db.close()
+
