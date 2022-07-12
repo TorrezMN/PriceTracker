@@ -66,6 +66,7 @@ def update_stock_categories(a:dict):
     
 @op
 def incert_update_category(cat):
+    """Incert's new record or updates new record if exist's."""
     logger = get_dagster_logger()
     db = SessionLocal()
 
@@ -83,3 +84,23 @@ def incert_update_category(cat):
         logger.info('A NEW RECORD WAS SAVED!')
     db.close()
 
+@op
+def get_random_stock_category()->dict:
+    """Returns a random category to start scrapping."""
+    logger = get_dagster_logger()
+    logger.info('RUNNING get_random_category op!')
+
+    db = SessionLocal()
+    category = categories_crud.get_random_category(db).__dict__
+    db.close()
+
+    return(category)
+
+@op
+def get_stock_category_soup(cat:dict):
+    """Gets the soup for a single category."""
+    logger = get_dagster_logger()
+    logger.info('GETTING A SINGLE CATEGORY SOUP!')
+    logger.info('=================================================')
+    logger.info(cat)
+    logger.info('=================================================')

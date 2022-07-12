@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # Author : Torrez, MN
 
+from random import choice
 from sqlalchemy import exc
 from db_engine import models
 from sqlalchemy.orm import Session
@@ -25,10 +26,8 @@ def save_category(db: Session, data: Category):
 
 
 def get_or_create_category(db: Session, cat:Category):
-
-
+    """Get's or create a new category if not exist's."""
     instance = db.query(models.Category).filter_by(**cat.dict()).first()
-
     if instance:
         return instance
     else:
@@ -42,3 +41,7 @@ def get_or_create_category(db: Session, cat:Category):
             errorInfo = error.orig
             return(errorInfo.pgerror)
 
+def get_random_category(db: Session):
+    """Returns a list of all categories."""
+    cat = choice(db.query(models.Category).all())
+    return(cat)

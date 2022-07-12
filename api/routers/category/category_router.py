@@ -55,3 +55,13 @@ def get_or_create_category(cat:Category, db=Depends(db)):
 
     return(API_RESPONSE)
 
+@category_router.get('/get_random_category')
+def get_random_category(db=Depends(db)):
+    """
+    Return's a random category.
+    """
+
+    API_RESPONSE['data'] = crud.get_random_category(db)
+
+    return(API_RESPONSE)
+
