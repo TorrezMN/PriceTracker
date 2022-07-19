@@ -1,2 +1,0 @@
-# PriceTracker
-Price tracker app.

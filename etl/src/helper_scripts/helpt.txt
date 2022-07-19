@@ -1,8 +1,0 @@
-
-
-
-
-
-
-
-BASE_URL='https://www.stock.com.py/default.aspx'
