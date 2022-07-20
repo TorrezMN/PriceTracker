@@ -9,10 +9,11 @@ import requests
 from typing import List
 from random import choice
 from decouple import config
-from dagster import Nothing, get_dagster_logger, op ,get_dagster_logger
-from bs4 import BeautifulSoup 
+from dagster import Nothing, get_dagster_logger, op, get_dagster_logger
+from bs4 import BeautifulSoup
 from helper_scripts.helper_scripts import HEADERS
 
+from datetime import datetime
 from helper_scripts.helper_scripts import make_soup, get_soup
 
 
@@ -21,11 +22,11 @@ from db_engine.database import SessionLocal
 
 
 #  CRUD OPERATIONS
-from db_engine import categories_crud,store_crud
+from db_engine import categories_crud, store_crud
 from db_engine import product_crud
 
 #  SCHEMAS
-from schemas.store_schemas import Category,Store, Product, Brand
+from schemas.store_schemas import Category, Store, Product, Brand
 
 
 @op
@@ -35,15 +36,15 @@ def get_main_content()->str:
     logger.info('GETTING MAIN CONTENT!')
     BASE_URL = config('BASE_URL')
     soup = get_soup(BASE_URL)
-    return(str(soup))
+    return str(soup)
 
 @op
-def get_categories(soup:str)->dict:
+def get_categories(soup: str)->dict:
     """Gets and print all sections and its urls."""
     logger = get_dagster_logger()
     logger.info('GETTING CATEGORIES!')
 
-    s = make_soup(soup) 
+    s = make_soup(soup)
 
     cats = {}
 
@@ -51,8 +52,8 @@ def get_categories(soup:str)->dict:
 
     for i in nav:
         for j in i.find_all('a', href=True):
-            cats[j.text]=j['href']
-    return(cats)
+            cats[j.text] = j['href']
+    return cats
 
 
 
@@ -74,7 +75,8 @@ def incert_update_category(cat):
     category = categories_crud.get_or_create_category(db, Category(
         store_id=store.id,
         category_name=cat[0],
-        category_url=cat[1]
+        category_url=cat[1],
+        category_recorded_date = datetime.today().strftime('%Y-%m-%d')
     ))
 
     if (category):
@@ -136,32 +138,36 @@ def process_stock_products(prod:str):
     # PRODUCT BRAND div.product-brand
     # PRODUCT NAME h2.product-title>a
 
-    image = product.find_all('a', class_='picture-link')[0]
-    title = product.find_all('h2', class_='product-title')[0] 
-    brand = product.find_all('div', class_='product-brand')[0]
-    price = product.find_all('span', class_='price-label')[0]
+    image = product.find_all('a', class_='picture-link')[0]['href']
+    title = product.find_all('h2', class_='product-title')[0].a.text
+    brand = product.find_all('div', class_='product-brand')[0].text.replace('\n', ' ').replace('\r', '')
+    price = product.find_all('span', class_='price-label')[0].text
 
-    logger.info('=================================================')
-    logger.info('PRODUCT -> ')
-    logger.info(image['href'])
-    logger.info(title.a.text)
-    logger.info(brand.text)
-    logger.info(price.text)
-    logger.info('=================================================')
     
-    logger.info(type(brand.text))
 
-    if(isinstance(brand.text, str)):
-        b = Brand(brand_name=brand.text.replace('\n', ' ').replace('\r', ''))
-        product_crud.get_or_create_brand(
+    if(isinstance(brand, str)):
+        b = Brand(
+            brand_name=brand,
+            brand_recorded_date = datetime.today().strftime('%Y-%m-%d')
+        )
+        brand_id = product_crud.get_or_create_brand(
             db,b
-            )
+            ).id
 
-    #  new_product = Product(
-        #  product_name = str
-        #  product_img = str   
-        #  product_brand_id = int
-        #  product_price = float
-    #  )
+        new_product = Product(
+            product_name = title,
+            product_img = image,
+            product_brand_id = brand_id,
+            product_price = price,
+            product_recorded_date = datetime.today().strftime('%Y-%m-%d')
+        )
+
+        p = product_crud.create_product(
+            db,
+            new_product
+        )
+        logger.info('LOADED A PRODUCT!')
+
+
 
     

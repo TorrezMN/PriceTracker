@@ -26,6 +26,14 @@ def db():
         db.close()
 
 
+@products_router.get('/get_all_products')
+def get_all_products(db=Depends(db)):
+    """Retreives all products from db."""
+    data = prod_crud.get_all_products(db)
+    API_RESPONSE['size'] = len(data)
+    API_RESPONSE['data'] = data
+    return(API_RESPONSE)
+
 
 @products_router.get('/get_all_brands')
 def get_all_brands(db=Depends(db)):
@@ -35,7 +43,6 @@ def get_all_brands(db=Depends(db)):
     data = prod_crud.get_all_brands(db)
     API_RESPONSE['size'] = len(data)
     API_RESPONSE['data'] = data
-
     return(API_RESPONSE)
 
 

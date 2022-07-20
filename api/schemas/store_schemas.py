@@ -19,6 +19,7 @@ class Category(BaseModel):
     store_id : int
     category_name : str
     category_url : str
+    category_recorded_date : date
 
     class Config:
         orm_mode = True
@@ -28,7 +29,8 @@ class Product(BaseModel):
     product_name : str
     product_img : str
     product_brand_id : int
-    product_price : float
+    product_price : str
+    product_recorded_date : date
     
     class Config:
         orm_mode = True
@@ -36,6 +38,8 @@ class Product(BaseModel):
 
 class Brand(BaseModel):
     brand_name : str
+    brand_recorded_date : date
+
 
     class Config:
         orm_mode = True

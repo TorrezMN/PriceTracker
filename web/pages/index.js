@@ -12,9 +12,9 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-		<center>
-			<h1>Price Tracker</h1>
-		</center>
+        <center>
+          <h1>Price Tracker</h1>
+        </center>
       </main>
 
     </div>
