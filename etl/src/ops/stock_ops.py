@@ -43,11 +43,8 @@ def get_categories(soup: str)->dict:
     """Gets and print all sections and its urls."""
     logger = get_dagster_logger()
     logger.info('GETTING CATEGORIES!')
-
     s = make_soup(soup)
-
     cats = {}
-
     nav = s.find_all("ul", class_="catnav")
 
     for i in nav:
@@ -55,15 +52,12 @@ def get_categories(soup: str)->dict:
             cats[j.text] = j['href']
     return cats
 
-
-
 @op
-def update_stock_categories(a:dict):
+def update_stock_categories(a: dict):
     logger = get_dagster_logger()
     logger.info('DISPLAYING THE DATA!')
     for i in a.items():
         incert_update_category(i)
-
     
 @op
 def incert_update_category(cat):

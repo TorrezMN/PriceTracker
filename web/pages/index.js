@@ -12,9 +12,21 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <center>
-          <h1>Price Tracker</h1>
-        </center>
+        <h1 className={styles.main_title}>Price Tracker</h1>
+        <div className={styles.header_stats}>
+          <div className={styles.stats_item}>
+            X
+          </div>
+          <div className={styles.stats_item}>
+            X
+          </div>
+          <div className={styles.stats_item}>
+            X
+          </div>
+          <div className={styles.stats_item}>
+            X
+          </div>
+        </div>
       </main>
 
     </div>
