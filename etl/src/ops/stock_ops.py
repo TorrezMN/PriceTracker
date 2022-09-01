@@ -24,9 +24,10 @@ from db_engine.database import SessionLocal
 #  CRUD OPERATIONS
 from db_engine import categories_crud, store_crud
 from db_engine import product_crud
+from db_engine import brand_crud
 
 #  SCHEMAS
-from schemas.store_schemas import Category, Store, Product, Brand
+from schemas.store_schemas import Category, Store, Product, Brand, Brand_Name
 
 
 @op
@@ -138,22 +139,24 @@ def process_stock_products(prod:str):
     price = product.find_all('span', class_='price-label')[0].text
 
     
+    format_string = "%Y-%m-%d %H:%M:%S"
+
 
     if(isinstance(brand, str)):
-        b = Brand(
-            brand_name=brand,
-            brand_recorded_date = datetime.today().strftime('%Y-%m-%d')
+        b = brand_crud.get_or_create_brand(
+            db,
+            Brand_Name(brand_name=brand)
         )
-        brand_id = product_crud.get_or_create_brand(
-            db,b
-            ).id
+
+        brand_id = b.id
 
         new_product = Product(
             product_name = title,
             product_img = image,
             product_brand_id = brand_id,
             product_price = price,
-            product_recorded_date = datetime.today().strftime('%Y-%m-%d')
+            #  product_recorded_date = datetime.strptime(str(datetime.today().strftime('%Y-%m-%d')), format_string),
+            product_recorded_date = datetime.today().strftime('%Y-%m-%d'),
         )
 
         p = product_crud.create_product(

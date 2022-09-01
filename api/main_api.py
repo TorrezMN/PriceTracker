@@ -15,6 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers.store import store_router
 from routers.category import category_router
 from routers.products import products_router
+from routers.brands import brands_router 
 
 
 
@@ -38,6 +39,7 @@ app = FastAPI(title="Price tracker api.",
 app.include_router(store_router.store_router)
 app.include_router(category_router.category_router)
 app.include_router(products_router.products_router)
+app.include_router(brands_router.brands_rounter)
 
 
 #  MIDLEWARE SETUP

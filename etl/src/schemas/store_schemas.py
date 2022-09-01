@@ -24,7 +24,6 @@ class Category(BaseModel):
     class Config:
         orm_mode = True
 
-
 class Product(BaseModel):
     product_name : str
     product_img : str
@@ -35,11 +34,14 @@ class Product(BaseModel):
     class Config:
         orm_mode = True
 
-
 class Brand(BaseModel):
     brand_name : str
     brand_recorded_date : date
 
+    class Config:
+        orm_mode = True
 
+class Brand_Name(BaseModel):
+    brand_name : str
     class Config:
         orm_mode = True
