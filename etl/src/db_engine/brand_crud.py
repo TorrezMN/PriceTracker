@@ -13,13 +13,12 @@ from datetime import date
 from schemas.store_schemas import Brand_Name
 
 
-
 def get_all_brands(db: Session):
     """Returns all brands registered."""
     return db.query(models.Brand).all()
 
 
-def get_or_create_brand(db:Session, brand:Brand_Name):
+def get_or_create_brand(db: Session, brand: Brand_Name):
     instance = db.query(models.Brand).filter_by(**brand.dict()).first()
     today = date.today()
 
@@ -34,9 +33,7 @@ def get_or_create_brand(db:Session, brand:Brand_Name):
             db.add(s)
             db.commit()
             db.refresh(s)
-            return (s)
+            return s
         except exc.IntegrityError as error:
             errorInfo = error.orig
-            return(errorInfo.pgerror)
-
-
+            return errorInfo.pgerror

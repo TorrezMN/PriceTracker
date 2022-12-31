@@ -4,6 +4,7 @@
 
 from db_engine import models
 from sqlalchemy.orm import Session
+
 #  IMPORTING SCHEMAS
 from schemas.store_schemas import Store
 
@@ -13,17 +14,22 @@ def save_store(db: Session, data: Store):
     db.add(store)
     db.commit()
     db.refresh(store)
-    return (store)
+    return store
+
 
 def filter_store_name(db: Session, store_name: str):
-    return db.query(models.Store).filter(
-        models.Store.store_name.contains(store_name)).first()
+    return (
+        db.query(models.Store)
+        .filter(models.Store.store_name.contains(store_name))
+        .first()
+    )
+
 
 def get_all_stores(db: Session):
     return db.query(models.Store).all()
 
 
-def get_or_create_store(db: Session, store:Store):
+def get_or_create_store(db: Session, store: Store):
     instance = db.query(models.Store).filter_by(**store.dict()).first()
     if instance:
         return instance
@@ -32,4 +38,4 @@ def get_or_create_store(db: Session, store:Store):
         db.add(s)
         db.commit()
         db.refresh(s)
-        return (s)
+        return s

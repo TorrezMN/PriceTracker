@@ -15,25 +15,22 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers.store import store_router
 from routers.category import category_router
 from routers.products import products_router
-from routers.brands import brands_router 
-
+from routers.brands import brands_router
 
 
 #  CREATE DB MODELS
 models.Base.metadata.create_all(bind=engine)
 
 
-
-
-
 #  IMPORTING METADATA
 # from api_metadata import api_metadata
 
-app = FastAPI(title="Price tracker api.",
-              # description="A small api to explore COVID data of Paraguay..",
-              version="0.0.1",
-              #  openapi_tags=api_metadata
-              )
+app = FastAPI(
+    title="Price tracker api.",
+    # description="A small api to explore COVID data of Paraguay..",
+    version="0.0.1",
+    #  openapi_tags=api_metadata
+)
 
 #  INCLUDING ROUTERS
 app.include_router(store_router.store_router)
@@ -52,9 +49,6 @@ app.add_middleware(
 )
 
 
-
-
-
 def db():
     try:
         db = SessionLocal()
@@ -63,8 +57,6 @@ def db():
         db.close()
 
 
-@app.get('/')
+@app.get("/")
 def api_home(request: Request):
-	return('HOLA MUNDO!')
-
-
+    return "HOLA MUNDO!"

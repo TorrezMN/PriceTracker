@@ -19,5 +19,8 @@ def test_complex_job():
     assert result.success
     # inspect individual ops result
     assert len(result.output_for_node("download_cereals")) == 77
-    assert result.output_for_node("find_highest_calorie_cereal") == "Strawberry Fruit Wheats"
+    assert (
+        result.output_for_node("find_highest_calorie_cereal")
+        == "Strawberry Fruit Wheats"
+    )
     assert result.output_for_node("find_highest_protein_cereal") == "Special K"

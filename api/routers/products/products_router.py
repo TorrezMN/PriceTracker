@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Author : Torrez, MN
@@ -26,28 +25,28 @@ def db():
         db.close()
 
 
-@products_router.get('/get_all_products')
+@products_router.get("/get_all_products")
 def get_all_products(db=Depends(db)):
     """Retreives all products from db."""
     data = prod_crud.get_all_products(db)
-    API_RESPONSE['size'] = len(data)
-    API_RESPONSE['data'] = data
-    return(API_RESPONSE)
+    API_RESPONSE["size"] = len(data)
+    API_RESPONSE["data"] = data
+    return API_RESPONSE
 
 
-@products_router.get('/get_all_brands')
+@products_router.get("/get_all_brands")
 def get_all_brands(db=Depends(db)):
     """
     Get all brand's
     """
     data = prod_crud.get_all_brands(db)
-    API_RESPONSE['size'] = len(data)
-    API_RESPONSE['data'] = data
-    return(API_RESPONSE)
+    API_RESPONSE["size"] = len(data)
+    API_RESPONSE["data"] = data
+    return API_RESPONSE
 
 
-@products_router.post('/new_brand')
-def create_new_brand(brand:Brand , db=Depends(db)):
-    data = prod_crud.get_or_create_brand(db, brand) 
-    API_RESPONSE['data'] = data
-    return(API_RESPONSE)
+@products_router.post("/new_brand")
+def create_new_brand(brand: Brand, db=Depends(db)):
+    data = prod_crud.get_or_create_brand(db, brand)
+    API_RESPONSE["data"] = data
+    return API_RESPONSE

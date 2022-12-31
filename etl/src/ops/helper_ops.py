@@ -10,11 +10,7 @@ from dagster import Nothing, get_dagster_logger, op
 from decouple import config
 
 
-
-def check_url_status(url)->bool:
+def check_url_status(url) -> bool:
     """Checks if the url exist's."""
     r = requests.head(url)
-    return (r.status_code == 200)
-
-
-
+    return r.status_code == 200

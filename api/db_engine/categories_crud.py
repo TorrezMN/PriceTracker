@@ -11,10 +11,10 @@ from sqlalchemy.orm import Session
 from schemas.store_schemas import Category
 
 
-
 def get_all_categories(db: Session):
     """Returns a list of all categories."""
     return db.query(models.Category).all()
+
 
 def save_category(db: Session, data: Category):
     """Saves a new category."""
@@ -22,10 +22,10 @@ def save_category(db: Session, data: Category):
     db.add(category)
     db.commit()
     db.refresh(category)
-    return (category)
+    return category
 
 
-def get_or_create_category(db: Session, cat:Category):
+def get_or_create_category(db: Session, cat: Category):
     """Get's or create a new category if not exist's."""
     instance = db.query(models.Category).filter_by(**cat.dict()).first()
     if instance:
@@ -36,12 +36,13 @@ def get_or_create_category(db: Session, cat:Category):
             db.add(s)
             db.commit()
             db.refresh(s)
-            return (s)
+            return s
         except exc.IntegrityError as error:
             errorInfo = error.orig
-            return(errorInfo.pgerror)
+            return errorInfo.pgerror
+
 
 def get_random_category(db: Session):
     """Returns a list of all categories."""
     cat = choice(db.query(models.Category).all())
-    return(cat)
+    return cat
